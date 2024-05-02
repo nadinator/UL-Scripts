@@ -1,0 +1,7 @@
+*.pt
+/predictions
+/save
+*.png
+*.jpg
+*.jpeg
+*.json
