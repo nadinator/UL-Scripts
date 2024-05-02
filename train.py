@@ -32,7 +32,7 @@ tuning_space = {
 }
 
 if __name__ == "__main__":
-    grid = product(tuning_space.values(), repeat=1)
+    grid = product(*tuning_space.values(), repeat=1)
     for  values in grid:
         name_parts = [f"{key}{value}" for key, value in tuning_args.items()]
         training_args["name"] = "_".join(name_parts)
