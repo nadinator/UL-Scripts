@@ -60,7 +60,7 @@ def cxcywh2xyxy(bbox):
 def main():
     """Main function to run inference of a YOLOv8 model on your test split."""
     parser = argparse.ArgumentParser(description="Run inference of a YOLOv8 model on your test split (or any as a matter of fact).")
-    
+
     parser.add_argument("-m", "--model_path", type=str, help="Path to best.pt")
     parser.add_argument("-y", "--yaml_path", type=str, help="Path to data.yaml")
     parser.add_argument("-p", "--project", type=str, help="project name")
@@ -75,7 +75,7 @@ def main():
 
     parser.set_defaults(add_gt=False)
     parser.set_defaults(save_images=False)
-    
+
     # Load parameters
     args = parser.parse_args()
     model_path = Path(args.model_path)
@@ -83,7 +83,7 @@ def main():
 
     # Load yaml file data
     with yaml_path.open() as f:
-        yaml_data = yaml.safe_load(file)
+        yaml_data = yaml.safe_load(f)
 
     # Do validation
     model = YOLO(model_path)
