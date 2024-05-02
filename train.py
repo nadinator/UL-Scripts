@@ -34,7 +34,7 @@ tuning_space = {
 if __name__ == "__main__":
     grid = product(*tuning_space.values(), repeat=1)
     for  values in grid:
-        name_parts = [f"{key}{value}" for key, value in tuning_args.items()]
+        name_parts = [f"{key}{value}" for key, value in tuning_space.items()]
         training_args["name"] = "_".join(name_parts)
         
         tuning_args = dict(zip(tuning_space.keys(), values))
