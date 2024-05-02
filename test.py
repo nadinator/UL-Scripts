@@ -102,7 +102,6 @@ def main():
 
     # Draw on and save images
     if args.save_images:
-        print("Saving Prediction images ...")
         save_path = Path(validation_results.save_dir) / "predictions"
         save_path.mkdir()
 
@@ -114,21 +113,22 @@ def main():
         else:
             images_path = Path(args.images_path)
             labels_path = images_path.with_name("labels")
+            
+        assert images_path.exists(), f"Image path does not exist: {images_path}"
+        assert labels_path.exists(), f"Labels path does not exist: {labels_path}"
 
         # Iterate over images, draw boxes on them, and save them
-        for image in tqdm.tqdm(images_path.iterdir()):
-            result = model(images_path / image, verbose=False, conf=args.conf)
+        for image in tqdm.tqdm(list(images_path.iterdir()), desc="Saving prediction images..."):
+            result = model(str(image.resolve()), verbose=False, conf=args.conf)
             annotated_frame = result[0]
 
             if args.add_gt:
-                original_image = cv2.imread(str(images_path / image))
+                original_image = cv2.imread(str(image.resolve()))
                 h, w, c = original_image.shape
 
                 annotator = Annotator(original_image)
 
-                gt_labels = get_labels_from_file(
-                    labels_path / image.with_suffix(".txt")
-                )
+                gt_labels = get_labels_from_file(labels_path / (image.name + "txt"))
                 for box in gt_labels:
                     box[1] *= w
                     box[3] *= w
@@ -143,9 +143,9 @@ def main():
                     (gt_annotated_fram, annotated_frame.plot())
                 )
                 final_frame = Image.fromarray(final_frame)
-                final_frame.save(save_path / image)
+                final_frame.save(save_path / image.name)
             else:
-                annotated_frame.save(filename=save_path / image)
+                annotated_frame.save(filename=save_path / image.name)
 
     # save the command into (command.txt)
     s = " ".join(sys.argv)
