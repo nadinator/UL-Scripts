@@ -7,8 +7,8 @@ from ultralytics import YOLO
 
 
 data_yaml = "./data.yaml"
-model = YOLO("yolov8l.pt")
-training_args = {
+model = YOLO("yolov8l.pt") #* Should be modified per experiment.
+training_args = { #* Should be modified per experiment.
     "data": str(data_yaml),
     "dropout": 0.2,
     "patience": 250,
@@ -16,14 +16,14 @@ training_args = {
     "cache": True,
     "device": "2,3",
     "val": True,
-    "workers": 32,
+    "workers": 0, #! Only increase this on Windows if you want RAM to explode.
     "epochs": 750,
     "project": "./e5-training/",
     "plots": True,
     # "pretrained": True,
     # "resume": True
 }
-tuning_space = {
+tuning_space = { #* Should be modified per experiment.
     "lr0": (1e-9, 1e-7, 1e-5),
     "lrf": (0.0001, 0.001),
     "momentum": (0.95, 0.9),
