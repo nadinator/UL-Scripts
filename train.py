@@ -32,12 +32,13 @@ tuning_space = {
 }
 
 if __name__ == "__main__":
-    grid = product(*tuning_space.values(), repeat=1)
-    for  values in grid:
-        name_parts = [f"{key}{value}" for key, value in tuning_space.items()]
+    grid = list(product(*tuning_space.values(), repeat=1))
+    keys = list(tuning_space.keys())
+    for pair in grid:
+        name_parts = [f"{keys[i]}{pair[i]}" for i in range(len(pair))]
         training_args["name"] = "_".join(name_parts)
         
-        tuning_args = dict(zip(tuning_space.keys(), values))
+        tuning_args = dict(zip(keys, pair))
         merged_args = {**training_args, **tuning_args}
 
         t0 = time()
