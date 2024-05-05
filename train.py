@@ -32,7 +32,8 @@ tuning_space = { #* Should be modified per experiment.
 }
 
 if __name__ == "__main__":
-    grid = list(product(*tuning_space.values(), repeat=1))
+    skip = 0
+    grid = list(product(*tuning_space.values(), repeat=1))[skip:]
     keys = list(tuning_space.keys())
     for pair in grid:
         name_parts = [f"{keys[i]}{pair[i]}" for i in range(len(pair))]
@@ -46,12 +47,14 @@ if __name__ == "__main__":
         tf = time()
 
         #? For some reason, `result` is None here but not when I run YOLO().train() straight
-        # precision = result.results_dict["metrics/precision(B)"]
-        # recall = result.results_dict["metrics/recall(B)"]
-        # f1 = 2*precision*recall / (precision+recall)
 
         print(f"========== RESULT FOR {training_args['name']}==========")
         print(f"Time taken: {tf-t0:.2f} seconds")
-        # print(f"Overall F1 score: {f1:.2f}")
-        print(result)
+        if result is not None:
+            precision = result.results_dict["metrics/precision(B)"]
+            recall = result.results_dict["metrics/recall(B)"]
+            f1 = 2*precision*recall / (precision+recall)
+            print(f"Overall F1 score: {f1:.2f}")
+            # print(result)
         print("========== END RESULT ==========")
+        sleep(1)
