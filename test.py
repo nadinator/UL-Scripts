@@ -66,8 +66,8 @@ def main():
     parser.add_argument("-p", "--project", type=str, help="project name")
     parser.add_argument("-n", "--name", type=str, help="name")
     parser.add_argument("-s", "--split", type=str, help="Split to evaluate over [train,val,test]")
-    parser.add_argument("-d", "--device", type=str, default="cpu", help="Devices")
-    parser.add_argument("-b", "--batch", type=int, default=32, help="batch size")
+    parser.add_argument("-d", "--device", type=str, default="0", help="Devices")
+    parser.add_argument("-b", "--batch", type=int, default=64, help="batch size")
     parser.add_argument("-c", "--conf", type=float, default=0.5, help="conf")
     parser.add_argument("-si", "--save_images", dest="save_images", action="store_true", help="Save bounding boxes")
     parser.add_argument("-ag", "--add_gt", dest="add_gt", action="store_true", help="Save gt bounding boxes")
@@ -100,6 +100,16 @@ def main():
         workers=0,
     )
 
+    p = validation_results.results_dict["metrics/precision(B)"]
+    r = validation_results.results_dict["metrics/recall(B)"]
+    f1 = 2 * p * r / (p + r)
+    print()
+    print("Average F1 Score: ", f1)
+    print("Average Precision: ", p)
+    print("Average Recall: ", r)
+    print("Average mAP: ", validation_results.results_dict["metrics/mAP50(B)"])
+    print()
+
     # Draw on and save images
     if args.save_images:
         save_path = Path(validation_results.save_dir) / "predictions"
@@ -113,7 +123,7 @@ def main():
         else:
             images_path = Path(args.images_path)
             labels_path = images_path.with_name("labels")
-            
+
         assert images_path.exists(), f"Image path does not exist: {images_path}"
         assert labels_path.exists(), f"Labels path does not exist: {labels_path}"
 
