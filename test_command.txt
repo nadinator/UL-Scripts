@@ -1,0 +1,1 @@
+python test.py -m .\results--freeze10_lr01e-09_optAdamW\weights\best.pt -y .\data.yaml -p testing -s test -b 16 -si
