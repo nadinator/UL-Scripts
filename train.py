@@ -8,45 +8,46 @@ from ultralytics import YOLO
 
 data_yaml = "./data.yaml"
 model = YOLO("yolov8l.pt") #* Should be modified per experiment.
-training_args = { #* Should be modified per experiment.
+training_args = {  # * Should be modified per experiment.
     "data": str(data_yaml),
     "dropout": 0.2,
     "patience": 250,
-    "batch": 128,
+    "batch": 256,
     "cache": True,
-    "device": "2,3",
+    "device": "0,1,2,3",
     "val": True,
-    "workers": 0, #! Only increase this on Windows if you want RAM to explode.
+    "workers": 0,  #! Only increase this on Windows if you want RAM to explode.
     "epochs": 750,
-    "project": "./e5-training/",
+    "project": "./training/",
     "plots": True,
-    # "pretrained": True,
+    "pretrained": True,
+    "optimizer": "AdamW",
     # "resume": True
 }
-tuning_space = { #* Should be modified per experiment.
+tuning_space = {  # * Should be modified per experiment.
     "lr0": (1e-9, 1e-7, 1e-5),
     "lrf": (0.0001, 0.001),
     "momentum": (0.95, 0.9),
-    "pretrained": (False, True),
-    "optimizer": ("AdamW", "SGD"),
+    # "pretrained": (False, True),
+    # "optimizer": ("AdamW", "SGD"),
 }
+
 
 if __name__ == "__main__":
     skip = 0
     grid = list(product(*tuning_space.values(), repeat=1))[skip:]
     keys = list(tuning_space.keys())
-    for pair in grid:
+
+    for j, pair in enumerate(grid):
         name_parts = [f"{keys[i]}{pair[i]}" for i in range(len(pair))]
-        training_args["name"] = "_".join(name_parts)
-        
+        training_args["name"] = f"run{j}--" + "_".join(name_parts)
+
         tuning_args = dict(zip(keys, pair))
         merged_args = {**training_args, **tuning_args}
 
         t0 = time()
         result = model.train(**merged_args)
         tf = time()
-
-        #? For some reason, `result` is None here but not when I run YOLO().train() straight
 
         print(f"========== RESULT FOR {training_args['name']}==========")
         print(f"Time taken: {tf-t0:.2f} seconds")
