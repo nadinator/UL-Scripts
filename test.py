@@ -153,9 +153,9 @@ def main():
                     (gt_annotated_fram, annotated_frame.plot())
                 )
                 final_frame = Image.fromarray(final_frame)
-                final_frame.save(save_path / image.name)
+                final_frame.save(str(save_path / image.name))
             else:
-                annotated_frame.save(filename=save_path / image.name)
+                annotated_frame.save(filename=str(save_path / image.name))
 
     # save the command into (command.txt)
     s = " ".join(sys.argv)
