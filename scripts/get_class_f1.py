@@ -1,6 +1,8 @@
 import pandas as pd
 from io import StringIO
 
+
+destination = f"."
 data = """
 Class Images Instances P R mAP50 mAP50-95
 all 1737 20028 0.761 0.398 0.586 0.378
@@ -21,9 +23,9 @@ Shirt 1737 3545 0.939 0.86 0.92 0.711
 Sleeves 1737 103 0.8 0.0388 0.419 0.21
 """
 
-df = pd.read_csv(StringIO(data), sep=" ")
+df = pd.read_csv(StringIO(data), sep="\s+")
 df["F1"] = 2 * (df["P"] * df["R"]) / (df["P"] + df["R"])
-df["F1"].fillna(0, inplace=True)
+df["F1"] = df["F1"].fillna(0)
 
-with open("class_results.md", "w") as f:
+with open(f"{destination}/class_results.md", "w") as f:
     f.write(df.to_markdown())
